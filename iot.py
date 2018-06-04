@@ -23,7 +23,7 @@ def temp_raw():
 def read_lat():
     try:
         report = session.next()
-        return report['lat'], report['lon'], report.time
+        return report['lat'], report['lon'], report['time']
     except:
         return 0, 0
 
