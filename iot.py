@@ -1,8 +1,7 @@
-from flask import Flask,stream_with_context, request, Response,jsonify
-
+import gps
+from flask import Flask, stream_with_context, Response
 
 app = Flask(__name__)
-
 
 import os
 import time
@@ -10,6 +9,8 @@ import time
 os.system('modprobe w1-gpio')
 os.system('modprobe w1-therm')
 temp_sensor = '/sys/bus/w1/devices/28-0416b358d0ff/w1_slave'
+session = gps.gps("localhost", "2947")
+session.stream(gps.WATCH_ENABLE | gps.WATCH_NEWSTYLE)
 
 
 def temp_raw():
@@ -17,6 +18,14 @@ def temp_raw():
     lines = f.readlines()
     f.close()
     return lines
+
+
+def read_lat():
+    try:
+        report = session.next()
+        return report['lat'], report['lon']
+    except:
+        return 0, 0
 
 
 def read_temp():
@@ -38,8 +47,10 @@ def read_temp():
 def stream():
     def generate():
         while True:
-            yield "{'temperature':"+read_temp()+"}"
+            lat_long = read_lat()
+            yield "{'temperature':" + read_temp() + " ,'lat':" + str(lat_long[0]) + " ,'lon':" + str(lat_long[1]) + "}"
             time.sleep(1)
+
     return Response(stream_with_context(generate()))
 
 
