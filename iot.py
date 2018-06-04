@@ -38,9 +38,9 @@ def read_temp():
 def stream():
     def generate():
         while True:
-            time.sleep(1)
             yield read_temp()
-    return jsonify({'status': 'OK', 'response': Response(generate())}), 200
+            time.sleep(1)
+    return Response(generate())
 
 
 if __name__ == '__main__':
