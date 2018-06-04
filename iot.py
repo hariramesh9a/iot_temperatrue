@@ -25,7 +25,7 @@ def read_lat():
         report = session.next()
         return report['lat'], report['lon'], report['time']
     except:
-        return 0, 0
+        return 0, 0, 0
 
 
 def read_temp():
