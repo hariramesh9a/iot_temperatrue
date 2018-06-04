@@ -1,4 +1,4 @@
-from flask import Flask,stream_with_context, request, Response
+from flask import Flask,stream_with_context, request, Response,jsonify
 
 
 app = Flask(__name__)
@@ -40,7 +40,7 @@ def stream():
         while True:
             time.sleep(1)
             yield read_temp()
-    return Response(generate())
+    return jsonify({'status': 'OK', 'response': Response(generate())}), 200
 
 
 if __name__ == '__main__':
