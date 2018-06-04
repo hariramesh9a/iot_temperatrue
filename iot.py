@@ -23,7 +23,7 @@ def temp_raw():
 def read_lat():
     try:
         report = session.next()
-        return report['lat'], report['lon']
+        return report['lat'], report['lon'], report.time
     except:
         return 0, 0
 
@@ -48,7 +48,8 @@ def stream():
     def generate():
         while True:
             lat_long = read_lat()
-            yield "{'temperature':" + read_temp() + " ,'lat':" + str(lat_long[0]) + " ,'lon':" + str(lat_long[1]) + "}"
+            yield "{ 'ts':" + str(lat_long[2]) + ",temperature':" + read_temp() + " ,'lat':" + str(
+                lat_long[0]) + " ,'lon':" + str(lat_long[1]) + "}"
             time.sleep(1)
 
     return Response(stream_with_context(generate()))
